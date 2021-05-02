@@ -11,15 +11,15 @@ class StepFindingMethod(Enum):
 
 
 def f(x1, x2):
-    return x1 ** 2 + x2 ** 2 + x1 * x2
+    return 2 * x1 ** 2 + x2 ** 2 - x1 * x2 + x1 - x2
 
 
 def df_dx1(x1, x2):
-    return 2 * x1 + x2 ** 2 + x2
+    return 4 * x1 - x2 + 1
 
 
 def df_dx2(x1, x2):
-    return x1 ** 2 + 2 * x2 + x1
+    return 2 * x2 - x1 - 1
 
 
 def g(x1, x2, alpha):
@@ -85,18 +85,17 @@ def SteepestDescent(x1_start, x2_start, epsilon, step_finding_method):
     x2.append(x2_start)
     while True:
         if step_finding_method == StepFindingMethod.goldenSection:
-            alpha_arr.append(GoldenSectionMethod(0, 1000000000, epsilon, x1[len(x1) - 1], x2[len(x2) - 1]))
+            alpha_arr.append(GoldenSectionMethod(0, 1000000, epsilon, x1[-1], x2[-1]))
         if step_finding_method == StepFindingMethod.fibonacci:
-            alpha_arr.append(Fibonacci_Method(0, 1000000000, 100, x1[len(x1) - 1], x2[len(x2) - 1]))
-        x1_new = x1[len(x1) - 1] - alpha_arr[len(alpha_arr) - 1] * df_dx1(x1[len(x1) - 1], x2[len(x2) - 1])
-        x2_new = x2[len(x2) - 1] - alpha_arr[len(alpha_arr) - 1] * df_dx2(x1[len(x1) - 1], x2[len(x2) - 1])
-        x1.append(x1_new)
-        x2.append(x2_new)
-        if norma(x1[len(x1) - 1] - x1[len(x1) - 2], x2[len(x2) - 1] - x2[len(x2) - 2]) < epsilon:
+            alpha_arr.append(Fibonacci_Method(0, 1000000, 100, x1[-1], x2[-1]))
+        x1.append(x1[-1] - alpha_arr[-1] * df_dx1(x1[-1], x2[-1]))
+        x2.append(x2[-1] - alpha_arr[-1] * df_dx2(x1[-1], x2[-1]))
+        if norma(x1[-1] - x1[-2], x2[-1] - x2[-2]) < epsilon:
             break
+    print("Minimum point: ", [x1[-1], x2[-1]], " found in ", len(x1) - 1, " iterations")
 
 
-SteepestDescent(-4, 1, 0.0001, StepFindingMethod.goldenSection)
+SteepestDescent(-40, 100, 0.0001, StepFindingMethod.goldenSection)
 
 f_arr = []
 for i in range(len(x1)):
@@ -104,8 +103,8 @@ for i in range(len(x1)):
 
 fig = plt.figure()
 ax = fig.add_subplot(projection='3d')
-X1 = np.arange(min(x1), max(x1), 0.1)
-X2 = np.arange(min(x2), max(x2), 0.1)
+X1 = np.arange(min(x1) - 0.1 * (max(x1) - min(x1)), max(x1) + 0.1 * (max(x1) - min(x1)), 0.1)
+X2 = np.arange(min(x2) - 0.1 * (max(x2) - min(x2)), max(x2) + 0.1 * (max(x2) - min(x2)), 0.1)
 X1, X2 = np.meshgrid(X1, X2)
 Z = f(X1, X2)
 ax.plot_surface(X1, X2, f(X1, X2), alpha=0.5)
