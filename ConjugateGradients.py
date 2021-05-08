@@ -30,6 +30,13 @@ def norma(x1, x2):
     return math.sqrt(x1 ** 2 + x2 ** 2)
 
 
+def scalar_multiply(x1, x2):
+    sum = 0
+    for i in range(len(x1)):
+        sum += x1[i] * x2[i]
+    return sum
+
+
 # Число Фибоначчи
 def Fibonacci(n):
     return int(((1 + math.sqrt(5)) ** n - (1 - math.sqrt(5)) ** n) / (2 ** n * math.sqrt(5)))
@@ -102,8 +109,8 @@ def ConjugateGradients(x1_start, x2_start, epsilon, step_finding_method):
         if (k + 1) % restart_interval == 0:
             beta.append(0)
         else:
-            beta.append((norma(df_dx1(x1[-1], x2[-1]), df_dx2(x1[-1], x2[-1])) ** 2) / (
-                    norma(df_dx1(x1[-2], x2[-2]), df_dx2(x1[-2], x2[-2])) ** 2))
+            beta.append((norma(df_dx1(x1[-1], x2[-1]), df_dx2(x1[-1], x2[-1])) ** 2) / scalar_multiply(
+                [df_dx1(x1[-2], x2[-2]), df_dx2(x1[-2], x2[-2])], p[-1]))
         p.append([-df_dx1(x1[-1], x2[-1]) + p[-1][0] * beta[-1],
                   -df_dx2(x1[-1], x2[-1]) + p[-1][1] * beta[-1]])
         k += 1
