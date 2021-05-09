@@ -90,20 +90,31 @@ def Fletcher_Reaves(x1_start, x2_start, epsilon, step_finding_method):
     restart_interval = 2
     k = 0
     while True:
+
+        # находим шаг согласно выбранному методу одномерной оптимизации
         if step_finding_method == StepFindingMethod.goldenSection:
             alpha.append(GoldenSectionMethod(0, 1000000, epsilon, x1[-1], x2[-1], p[-1]))
         if step_finding_method == StepFindingMethod.fibonacci:
             alpha.append(Fibonacci_Method(0, 1000000, 100, x1[-1], x2[-1], p[-1]))
+
+        # вычисляем следующее приближение
         x1.append(x1[-1] + alpha[-1] * p[-1][0])
         x2.append(x2[-1] + alpha[-1] * p[-1][1])
+
+        # условие остановки
         if norma(x1[-1] - x1[-2], x2[-1] - x2[-2]) < epsilon:
             k += 1
             break
+
         if (k + 1) % restart_interval == 0:
+            # через каждые restart_interval шагов делаем рестарт метода - обнуляем коэффициент beta
             beta.append(0)
         else:
+            # вычисляем коэффициент beta
             beta.append((norma(df_dx1(x1[-1], x2[-1]), df_dx2(x1[-1], x2[-1])) ** 2) / (
                     norma(df_dx1(x1[-2], x2[-2]), df_dx2(x1[-2], x2[-2])) ** 2))
+
+        # Вычисляем следующее направление
         p.append([-df_dx1(x1[-1], x2[-1]) + p[-1][0] * beta[-1],
                   -df_dx2(x1[-1], x2[-1]) + p[-1][1] * beta[-1]])
         k += 1
@@ -124,9 +135,16 @@ X1, X2 = np.meshgrid(X1, X2)
 Z = f(X1, X2)
 ax.plot_surface(X1, X2, f(X1, X2), alpha=0.5)
 ax.plot(x1, x2, f_arr, color="black")
+plt.xlabel("x1")
+plt.ylabel("x2")
+plt.title("График функции и траектория метода")
 plt.show()
 f_arr.sort()
 levels = pylab.contour(X1, X2, Z, f_arr)
-pylab.clabel(levels)
-pylab.plot(x1, x2)
-pylab.show()
+plt.plot(x1, x2)
+plt.clabel(levels)
+plt.xlabel("x1")
+plt.ylabel("x2")
+plt.title("Линии уровня и траектория метода")
+plt.show()
+

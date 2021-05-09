@@ -84,18 +84,24 @@ def SteepestDescent(x1_start, x2_start, epsilon, step_finding_method):
     x1.append(x1_start)
     x2.append(x2_start)
     while True:
+
+        # находим шаг согласно выбранному методу одномерной оптимизации
         if step_finding_method == StepFindingMethod.goldenSection:
             alpha_arr.append(GoldenSectionMethod(0, 1000000, epsilon, x1[-1], x2[-1]))
         if step_finding_method == StepFindingMethod.fibonacci:
             alpha_arr.append(Fibonacci_Method(0, 1000000, 100, x1[-1], x2[-1]))
+
+        # вычисляем следующее приближение
         x1.append(x1[-1] - alpha_arr[-1] * df_dx1(x1[-1], x2[-1]))
         x2.append(x2[-1] - alpha_arr[-1] * df_dx2(x1[-1], x2[-1]))
+
+        # условие остановки
         if norma(x1[-1] - x1[-2], x2[-1] - x2[-2]) < epsilon:
             break
     print("Minimum point: ", [x1[-1], x2[-1]], " found in ", len(x1) - 1, " iterations")
 
 
-SteepestDescent(-40, 100, 0.0001, StepFindingMethod.goldenSection)
+SteepestDescent(-40, 50, 0.0001, StepFindingMethod.goldenSection)
 
 f_arr = []
 for i in range(len(x1)):
@@ -109,9 +115,15 @@ X1, X2 = np.meshgrid(X1, X2)
 Z = f(X1, X2)
 ax.plot_surface(X1, X2, f(X1, X2), alpha=0.5)
 ax.plot(x1, x2, f_arr, color="black")
+plt.xlabel("x1")
+plt.ylabel("x2")
+plt.title("График функции и траектория метода")
 plt.show()
 f_arr.sort()
 levels = pylab.contour(X1, X2, Z, f_arr)
-pylab.clabel(levels)
-pylab.plot(x1, x2)
-pylab.show()
+plt.plot(x1, x2)
+plt.clabel(levels)
+plt.xlabel("x1")
+plt.ylabel("x2")
+plt.title("Линии уровня и траектория метода")
+plt.show()

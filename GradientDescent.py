@@ -4,9 +4,9 @@ import pylab
 import numpy as np
 from enum import Enum
 
-n = 2
-fragmentationCoef = 0.2
-fragmentationLimitCoef = 0.1
+n = 2   # размерность задачи
+fragmentationCoef = 0.9    # коэффициент, на который домножается шаг при дроблении
+fragmentationLimitCoef = 0.1    # коэффициент в условии выбора шага при дроблении
 
 
 class StepFindingMethod(Enum):
@@ -53,27 +53,36 @@ def GradientDescent(x_start, alpha_start, epsilon, step_finding_method):
     x.append(x_start)
     alpha = alpha_start
     while True:
+
+        # находим шаг согласно выбранному методу
         if step_finding_method == StepFindingMethod.stepFragmentation:
-            if len(x) % 100 == 0:
+            if len(x) % 10 == 0:
+                # периодически начинаем дробление заново
                 alpha = alpha_start
             while True:
+                # дробим шаг, пока он не удовлетворяет условию
                 x_new = []
                 for i in range(n):
                     x_new.append(x[-1][i] - alpha * grad_f(x[-1])[i])
+                # проверяем шаг на соответствие условию релаксации
                 if f(x_new) <= f(x[-1]) - fragmentationLimitCoef * alpha * (norma(grad_f(x[-1])) ** 2):
                     break
                 alpha *= fragmentationCoef
         alpha_arr.append(alpha)
+
+        # вычисляем следующее приближение
         x_new = []
         for i in range(n):
             x_new.append(x[-1][i] - alpha * grad_f(x[-1])[i])
         x.append(x_new)
+
+        # условие остановки
         if norma(substractPoints(x[-1], x[-2])) < epsilon:
             break
     print("Minimum point: ", x[-1], " found in ", len(x) - 1, " iterations")
 
 
-GradientDescent([30, -10], 0.1, 0.0005, StepFindingMethod.constantStep)
+GradientDescent([30, -10], 0.5, 0.0005, StepFindingMethod.stepFragmentation)
 
 f_arr = []
 for i in range(len(x)):
@@ -93,9 +102,15 @@ X1, X2 = np.meshgrid(X1, X2)
 Z = f([X1, X2])
 ax.plot_surface(X1, X2, f([X1, X2]), alpha=0.5)
 ax.plot(x1, x2, f_arr, color="black")
+plt.xlabel("x1")
+plt.ylabel("x2")
+plt.title("График функции и траектория метода")
 plt.show()
 f_arr.sort()
 levels = pylab.contour(X1, X2, Z, f_arr)
-pylab.clabel(levels)
-pylab.plot(x1, x2)
-pylab.show()
+plt.plot(x1, x2)
+plt.clabel(levels)
+plt.xlabel("x1")
+plt.ylabel("x2")
+plt.title("Линии уровня и траектория метода")
+plt.show()
