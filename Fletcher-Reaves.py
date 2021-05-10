@@ -10,16 +10,27 @@ class StepFindingMethod(Enum):
     fibonacci = 1
 
 
+Q = [[2000, 1],
+     [1, 2]]
+
+b = [10, -1]
+
+x1_start = 100
+x2_start = -100
+e = 0.0001
+stepFindingMethod = StepFindingMethod.goldenSection
+
+
 def f(x1, x2):
-    return 2 * x1 ** 2 + x2 ** 2 - x1 * x2 + x1 - x2
+    return 0.5 * (Q[0][0] * x1 ** 2 + Q[0][1] * x1 * x2 + Q[1][0] * x1 * x2 + Q[1][1] * x2 ** 2) + x1 * b[0] + x2 * b[1]
 
 
 def df_dx1(x1, x2):
-    return 4 * x1 - x2 + 1
+    return Q[0][0] * x1 + Q[0][1] * x2 + b[0]
 
 
 def df_dx2(x1, x2):
-    return 2 * x2 - x1 - 1
+    return Q[1][0] * x1 + Q[1][1] * x2 + b[1]
 
 
 def g(x1, x2, alpha, p):
@@ -121,8 +132,10 @@ def Fletcher_Reaves(x1_start, x2_start, epsilon, step_finding_method):
     print("Minimum point: ", [x1[-1], x2[-1]], " found in ", k, " iterations")
 
 
-Fletcher_Reaves(-40.0, 50.0, 0.0001, StepFindingMethod.goldenSection)
+Fletcher_Reaves(x1_start, x2_start, e, stepFindingMethod)
 
+
+# построение графиков
 f_arr = []
 for i in range(len(x1)):
     f_arr.append(f(x1[i], x2[i]))
