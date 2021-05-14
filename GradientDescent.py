@@ -13,11 +13,15 @@ class StepFindingMethod(Enum):
     constantStep = 0
     stepFragmentation = 1
 
+Q = [[2, 1], [1, 2]]
+b = [0, 0]
 
-Q = [[2000, 1],
-     [1, 2]]
+# Q = [[2, 1], [1, 2]]
+# b = [10, -1]
 
-b = [1, -1]
+# Q = [[200000, 1], [1, 2]]
+# b = [10, -1]
+
 
 x_start = [100, -100]
 e = 0.0001
@@ -124,6 +128,7 @@ if n == 2:
     plt.ylabel("x2")
     plt.title("График функции и траектория метода")
     plt.show()
+    f_arr = list(set(f_arr))
     f_arr.sort()
     levels = pylab.contour(X1, X2, Z, f_arr)
     plt.plot(x1, x2)

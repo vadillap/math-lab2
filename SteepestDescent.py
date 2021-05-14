@@ -10,10 +10,15 @@ class StepFindingMethod(Enum):
     fibonacci = 1
 
 
-Q = [[2000, 1],
-     [1, 2]]
+Q = [[2, 1], [1, 2]]
+b = [0, 0]
 
-b = [10, -1]
+# Q = [[2, 1], [1, 2]]
+# b = [10, -1]
+
+# Q = [[200000, 1], [1, 2]]
+# b = [10, -1]
+
 
 x1_start = 100
 x2_start = -100
@@ -98,7 +103,7 @@ def SteepestDescent(x1_start, x2_start, epsilon, step_finding_method):
 
         # находим шаг согласно выбранному методу одномерной оптимизации
         if step_finding_method == StepFindingMethod.goldenSection:
-            alpha_arr.append(GoldenSectionMethod(0, 1000000, epsilon, x1[-1], x2[-1]))
+            alpha_arr.append(GoldenSectionMethod(0, 1000000, 0.000000000001, x1[-1], x2[-1]))
         if step_finding_method == StepFindingMethod.fibonacci:
             alpha_arr.append(Fibonacci_Method(0, 1000000, 100, x1[-1], x2[-1]))
 
@@ -132,6 +137,7 @@ plt.xlabel("x1")
 plt.ylabel("x2")
 plt.title("График функции и траектория метода")
 plt.show()
+f_arr = list(set(f_arr))
 f_arr.sort()
 levels = pylab.contour(X1, X2, Z, f_arr)
 plt.plot(x1, x2)
