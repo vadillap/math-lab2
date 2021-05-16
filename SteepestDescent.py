@@ -20,9 +20,9 @@ b = [0, 0]
 # b = [10, -1]
 
 
-x1_start = 100
-x2_start = -100
-e = 0.0001
+x1_start = 40
+x2_start = -35
+e = 1e-5
 stepFindingMethod = StepFindingMethod.goldenSection
 
 
@@ -103,7 +103,7 @@ def SteepestDescent(x1_start, x2_start, epsilon, step_finding_method):
 
         # находим шаг согласно выбранному методу одномерной оптимизации
         if step_finding_method == StepFindingMethod.goldenSection:
-            alpha_arr.append(GoldenSectionMethod(0, 1000000, 0.000000000001, x1[-1], x2[-1]))
+            alpha_arr.append(GoldenSectionMethod(0, 1000000, 1e-15, x1[-1], x2[-1]))
         if step_finding_method == StepFindingMethod.fibonacci:
             alpha_arr.append(Fibonacci_Method(0, 1000000, 100, x1[-1], x2[-1]))
 
@@ -127,8 +127,8 @@ for i in range(len(x1)):
 
 fig = plt.figure()
 ax = fig.add_subplot(projection='3d')
-X1 = np.arange(min(x1) - 0.1 * (max(x1) - min(x1)), max(x1) + 0.1 * (max(x1) - min(x1)), 0.1)
-X2 = np.arange(min(x2) - 0.1 * (max(x2) - min(x2)), max(x2) + 0.1 * (max(x2) - min(x2)), 0.1)
+X1 = np.arange(min(x1) - 0.1 * (max(x1) - min(x1)), max(x1) + 0.1 * (max(x1) - min(x1)), (max(x1) - min(x1)) * 0.001)
+X2 = np.arange(min(x2) - 0.1 * (max(x2) - min(x2)), max(x2) + 0.1 * (max(x2) - min(x2)), (max(x2) - min(x2)) * 0.001)
 X1, X2 = np.meshgrid(X1, X2)
 Z = f(X1, X2)
 ax.plot_surface(X1, X2, f(X1, X2), alpha=0.5)
@@ -137,11 +137,13 @@ plt.xlabel("x1")
 plt.ylabel("x2")
 plt.title("График функции и траектория метода")
 plt.show()
+
+fig, ax = plt.subplots()
+ax.plot(x1, x2, color="black")
 f_arr = list(set(f_arr))
 f_arr.sort()
 levels = pylab.contour(X1, X2, Z, f_arr)
-plt.plot(x1, x2)
-plt.clabel(levels)
+ax.contour(levels)
 plt.xlabel("x1")
 plt.ylabel("x2")
 plt.title("Линии уровня и траектория метода")

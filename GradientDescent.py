@@ -6,7 +6,7 @@ from enum import Enum
 
 n = 2  # размерность задачи
 fragmentationCoef = 0.5  # коэффициент, на который домножается шаг при дроблении
-fragmentationLimitCoef = 0.1  # коэффициент в условии выбора шага при дроблении
+fragmentationLimitCoef = 0.2  # коэффициент в условии выбора шага при дроблении
 
 
 class StepFindingMethod(Enum):
@@ -23,9 +23,9 @@ b = [0, 0]
 # b = [10, -1]
 
 
-x_start = [100, -100]
-e = 0.0001
-alpha_start = 0.5
+x_start = [40, -35]
+e = 1e-5
+alpha_start = 10
 stepFindingMethod = StepFindingMethod.stepFragmentation
 
 
@@ -102,9 +102,14 @@ def GradientDescent(x_start, alpha_start, epsilon, step_finding_method):
     print("Minimum point: ", x[-1], " found in ", len(x) - 1, " iterations")
 
 
-GradientDescent(x_start, alpha_start, e, stepFindingMethod)
+minimum_found = True
+try:
+    GradientDescent(x_start, alpha_start, e, stepFindingMethod)
+except OverflowError:
+    print("Minimum not found")
+    minimum_found = False
 
-if n == 2:
+if n == 2 and minimum_found:
     # построение графиков
     f_arr = []
     for i in range(len(x)):
@@ -118,8 +123,10 @@ if n == 2:
 
     fig = plt.figure()
     ax = fig.add_subplot(projection='3d')
-    X1 = np.arange(min(x1) - 0.1 * (max(x1) - min(x1)), max(x1) + 0.1 * (max(x1) - min(x1)), 0.1)
-    X2 = np.arange(min(x2) - 0.1 * (max(x2) - min(x2)), max(x2) + 0.1 * (max(x2) - min(x2)), 0.1)
+    X1 = np.arange(min(x1) - 0.1 * (max(x1) - min(x1)), max(x1) + 0.1 * (max(x1) - min(x1)),
+                   (max(x1) - min(x1)) * 0.001)
+    X2 = np.arange(min(x2) - 0.1 * (max(x2) - min(x2)), max(x2) + 0.1 * (max(x2) - min(x2)),
+                   (max(x2) - min(x2)) * 0.001)
     X1, X2 = np.meshgrid(X1, X2)
     Z = f([X1, X2])
     ax.plot_surface(X1, X2, f([X1, X2]), alpha=0.5)
@@ -128,11 +135,13 @@ if n == 2:
     plt.ylabel("x2")
     plt.title("График функции и траектория метода")
     plt.show()
+
+    fig, ax = plt.subplots()
+    ax.plot(x1, x2, color="black")
     f_arr = list(set(f_arr))
     f_arr.sort()
     levels = pylab.contour(X1, X2, Z, f_arr)
-    plt.plot(x1, x2)
-    plt.clabel(levels)
+    ax.contour(levels)
     plt.xlabel("x1")
     plt.ylabel("x2")
     plt.title("Линии уровня и траектория метода")
