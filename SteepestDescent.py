@@ -109,7 +109,7 @@ def SteepestDescent(x1_start, x2_start, epsilon, step_finding_method):
 
         # вычисляем следующее приближение
         x1.append(x1[-1] - alpha_arr[-1] * df_dx1(x1[-1], x2[-1]))
-        x2.append(x2[-1] - alpha_arr[-1] * df_dx2(x1[-1], x2[-1]))
+        x2.append(x2[-1] - alpha_arr[-1] * df_dx2(x1[-2], x2[-1]))
 
         # условие остановки
         if norma(x1[-1] - x1[-2], x2[-1] - x2[-2]) < epsilon:
@@ -144,6 +144,7 @@ f_arr = list(set(f_arr))
 f_arr.sort()
 levels = pylab.contour(X1, X2, Z, f_arr)
 ax.contour(levels)
+plt.gca().set_aspect('equal', adjustable='box')
 plt.xlabel("x1")
 plt.ylabel("x2")
 plt.title("Линии уровня и траектория метода")
