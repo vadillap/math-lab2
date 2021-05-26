@@ -2,6 +2,7 @@ import math
 import matplotlib.pyplot as plt
 import pylab
 import numpy as np
+import random
 from enum import Enum
 
 n = 2  # размерность задачи
@@ -100,6 +101,7 @@ def GradientDescent(x_start, alpha_start, epsilon, step_finding_method):
         if norma(substractPoints(x[-1], x[-2])) < epsilon:
             break
     print("Minimum point: ", x[-1], " found in ", len(x) - 1, " iterations")
+    return len(x) - 1
 
 
 minimum_found = True
@@ -146,3 +148,56 @@ if n == 2 and minimum_found:
     plt.ylabel("x2")
     plt.title("Линии уровня и траектория метода")
     plt.show()
+
+# Исследование зависимости количества итераций от n и k
+# n_range = [2, 3, 4, 5]
+# for n in n_range:
+#     successful = 0
+#     k_arr = []
+#     iter_arr = []
+#     for k in range(200000):
+#         if successful >= 1000:
+#             break
+#         x = []
+#         alpha_arr = []
+#         Q = []
+#         b = []
+#         for i in range(n):
+#             string = []
+#             for j in range(n):
+#                 if i > j:
+#                     string.append(Q[j][i])
+#                 else:
+#                     if i == j:
+#                         string.append(random.uniform(1, 100))
+#                     else:
+#                         string.append(random.uniform(-100, 100))
+#             Q.append(string)
+#         for i in range(n):
+#             b.append(random.uniform(-100, 100))
+#         eigenvalues = np.linalg.eig(np.array(Q))[0]
+#         tmp = []
+#         for eigenvalue in eigenvalues:
+#             if eigenvalue != 0:
+#                 tmp.append(abs(eigenvalues))
+#         eigenvalues = tmp
+#         k_arr.append(max(eigenvalues) / min(eigenvalues))
+#         x_start = []
+#         for i in range(n):
+#             x_start.append(random.randint(-100, 100))
+#         try:
+#             iter_arr.append(GradientDescent(x_start, alpha_start, e, stepFindingMethod))
+#             successful += 1
+#         except OverflowError:
+#             k_arr.pop()
+#         fig = plt.figure()
+#         ax = fig.add_subplot()
+#         ax.scatter(k_arr, iter_arr, color="black")
+#         plt.xlabel("k")
+#         plt.ylabel("iterations")
+#         plt.title("Зависимость количества итераций от k, n = " + str(n))
+#         z = np.polyfit(k_arr, iter_arr, 1)
+#         p = np.poly1d(z)
+#         pylab.plot(k_arr, p(k_arr))
+#         print("i=%.6fk + %.6f" % (z[0], z[1]))
+#         plt.show()
