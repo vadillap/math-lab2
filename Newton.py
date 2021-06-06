@@ -1,6 +1,4 @@
 import numpy as np
-import pylab
-from matplotlib import pyplot as plt
 
 
 class F:
@@ -50,29 +48,39 @@ def newton(x_0, f, epsilon):
 
         # проверяем условие останова
         if np.linalg.norm(x[-1] - x[-2]) < epsilon:
+            x.pop()
             break
 
     return x
 
 
 f1 = F({
-    "f": lambda x: 2 * x[0] ** 2 + x[1] ** 2 - x[0] * x[1] + x[0] - x[1],
-    "dx1": lambda x: 4 * x[0] - x[1] + 1,
-    "dx2": lambda x: 2 * x[1] - x[0] - 1,
-    "d2x1": lambda x: 4,
+    "f": lambda x: x[0] ** 2 + x[0] * x[1] + x[1] ** 2,
+    "dx1": lambda x: 2 * x[0] + x[1],
+    "dx2": lambda x: x[0] + 2 * x[1],
+    "d2x1": lambda x: 2,
     "d2x2": lambda x: 2,
-    "dx1dx2": lambda x: -1,
+    "dx1dx2": lambda x: 1,
 })
 
-# функция Розенброка, минимум в (1, 1)
 f2 = F({
-    "f": lambda x: 100 * (x[1] - x[0] ** 2) ** 2 + (1 - x[0]) ** 2,
-    "dx1": lambda x: -400 * x[0] * x[1] + 400 * x[0] ** 3 + 2 * x[0] - 2,
-    "dx2": lambda x: 200 * x[1] - 200 * x[0] ** 2,
-    "d2x1": lambda x: -400 * x[1] + 1200 * x[0] ** 2 + 2,
-    "d2x2": lambda x: 200,
-    "dx1dx2": lambda x: -400 * x[0],
+    "f": lambda x: x[0] ** 2 + x[0] * x[1] + x[1] ** 2 + 10 * x[0] - x[1],
+    "dx1": lambda x: 2 * x[0] + x[1] + 10,
+    "dx2": lambda x: x[0] + 2 * x[1] - 1,
+    "d2x1": lambda x: 2,
+    "d2x2": lambda x: 2,
+    "dx1dx2": lambda x: 1,
 })
 
-x = newton([10, 322], f1, 1e-5)
+f3 = F({
+    "f": lambda x: 100000 * x[0] ** 2 + x[0] * x[1] + x[1] ** 2 + 10 * x[0] - x[1],
+    "dx1": lambda x: 200000 * x[0] + x[1] + 10,
+    "dx2": lambda x: x[0] + 2 * x[1] - 1,
+    "d2x1": lambda x: 200000,
+    "d2x2": lambda x: 2,
+    "dx1dx2": lambda x: 1,
+})
+
+x = newton([10, 10], f3, 1e-7)
 print(x)
+print("Minimum point:", x[-1], "found in", len(x) - 1, "iterations")
