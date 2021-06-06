@@ -113,6 +113,8 @@ def SteepestDescent(x1_start, x2_start, epsilon, step_finding_method):
 
         # условие остановки
         if norma(x1[-1] - x1[-2], x2[-1] - x2[-2]) < epsilon:
+            x1.pop()
+            x2.pop()
             break
     print("Minimum point: ", [x1[-1], x2[-1]], " found in ", len(x1) - 1, " iterations")
 

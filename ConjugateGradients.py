@@ -125,7 +125,8 @@ def ConjugateGradients(x1_start, x2_start, epsilon, step_finding_method):
 
         # условие остановки
         if norma(x1[-1] - x1[-2], x2[-1] - x2[-2]) < epsilon:
-            k += 1
+            x1.pop()
+            x2.pop()
             break
 
         if (k + 1) % restart_interval == 0:

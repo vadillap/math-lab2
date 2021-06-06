@@ -99,6 +99,7 @@ def GradientDescent(x_start, alpha_start, epsilon, step_finding_method):
 
         # условие остановки
         if norma(substractPoints(x[-1], x[-2])) < epsilon:
+            x.pop()
             break
     print("Minimum point: ", x[-1], " found in ", len(x) - 1, " iterations")
     return len(x) - 1
